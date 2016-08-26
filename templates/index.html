@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:width="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>番茄计时器</title>
+    <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../static/style.css">
+</head>
+<body>
+<div id="wrap">
+
+    <!-- 标题部分 -->
+    <div id="header">
+        <div>
+            <a href="/" id="brand">番茄计时器</a>
+        </div>
+    </div>
+
+    <!-- 如果有被pin的任务 -->
+    {% if pined_task %}
+        <div id="pin-box">
+            <div id="pin-content">
+                <span id="pin-description">{{ pined_task.name }}</span>
+                <span class="glyphicon glyphicon-ok" id="pin-task-{{ pined_task.id }}" aria-hidden="true"></span>
+            </div>
+        </div>
+    {% endif %}
+
+
+    <!-- 左右两个框部分 -->
+    <div id="mainbody">
+        <div class="pomo">
+            <!-- 用于计时的按钮 -->
+            <button id="start-task" type="button" class="btn btn-default" style="width:100%">开始番茄</button>
+
+            <!-- 显示任务完成情况的列表 -->
+            <ul class="logs">
+                  {% for log in logs %}
+                    <li class="log"><h4 id="log-{{ log.id }}">{{ log.task_time_s.strftime('%H:%M:%S') }} - {{ log.task_time_e.strftime('%H:%M:%S') }}：{{ log.task_name }}</h4></li>
+                  {% endfor %}
+            </ul>
+        </div>
+
+        <div class="todo">
+            <!-- 添加任务的表单 -->
+            <div class="box-header">
+                <input class="form-control" id="task-name" type="text" name="taskinput" placeholder="添加任务"
+                       style="display:inline-block; width:86%"
+                       onkeypress="if (event.keyCode===13){create_long_task();}"/>
+                <input class="btn btn-default" id="add-task" type="submit" value="添加" style="display:inline-block;" />
+            </div>
+
+            <!-- 显示所有的任务列表 -->
+            <ul class="tasks">
+                  {% for task in tasks %}
+                    <li class="task">
+                        <button type="button" class="checked btn btn-default btn-xs" title="标记已完成">
+                            <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>
+                        </button>
+                        <h4 id="task-{{ task.id }}" style="display:inline-block; width:80%;">{{ task.name }}</h4>
+                        <!-- 置顶按钮 -->
+                        {% if task.pinned %}
+                        <span class="pin-btn pin-true" style="display:inline-block;">
+                            <button type="button" class="pin-btn btn btn-danger btn-xs" title="置顶任务">
+                                <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                        {% else %}
+                        <span class="pin-btn pin-false" style="display:inline-block;">
+                            <button type="button" class="btn btn-default btn-xs" title="置顶任务">
+                                <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                        {% endif %}
+                    </li>
+                  {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- 末尾版权部分 -->
+    <div id="footer">版权部分</div>
+</div>
+
+<script src="//code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="{{url_for('static', filename='main.js') }}"></script>
+</body>
+</html>
